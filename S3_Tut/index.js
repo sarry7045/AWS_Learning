@@ -1,3 +1,4 @@
+require("dotenv").config();
 const {
   S3Client,
   GetObjectCommand,
@@ -8,7 +9,7 @@ const {
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 const s3Client = new S3Client({
-  region: "eu-north-1",
+  region: process.env.AWS_REGION,
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -17,7 +18,7 @@ const s3Client = new S3Client({
 
 async function getObjectURL(key) {
   const command = new GetObjectCommand({
-    Bucket: "suraj-private-bucket",
+    Bucket: process.env.BUCKET_NAME,
     Key: key,
   });
   const url = getSignedUrl(s3Client, command);
@@ -26,7 +27,7 @@ async function getObjectURL(key) {
 
 async function putObject(fileName, contentType) {
   const command = new PutObjectCommand({
-    Bucket: "suraj-private-bucket",
+    Bucket: process.env.BUCKET_NAME,
     Key: `uploads/user-uploads/${fileName}`,
     ContentType: contentType,
   });
